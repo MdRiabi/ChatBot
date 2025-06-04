@@ -7,7 +7,7 @@ load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-def ask_groq(message, history=None, model="mixtral-8x7b-32768"):
+def ask_groq(message, history=None, model="llama3-8b-8192"):
     if history is None:
         history = []
 
