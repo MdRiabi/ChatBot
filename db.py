@@ -34,6 +34,9 @@ def init_db():
 
 
 def get_or_create_user(username):
+    if not username:  # Vérifiez si le username est valide
+        raise ValueError("Username cannot be empty")
+    
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
     c.execute("SELECT id FROM users WHERE username = ?", (username,))
@@ -43,7 +46,7 @@ def get_or_create_user(username):
     else:
         c.execute("INSERT INTO users (username) VALUES (?)", (username,))
         conn.commit()
-        user_id = c.lastrowid()
+        user_id = c.lastrowid
     conn.close()
     return user_id
 
@@ -52,7 +55,7 @@ def save_message(user_id, role, content):
     c = conn.cursor()
 
     c.execute(
-        "INSERT INTO messages (user_id, role, content) VALUE (?,?,?)",
+        "INSERT INTO messages (user_id, role, content) VALUES (?,?,?)",
         (user_id, role, content)
     )
     conn.commit()
