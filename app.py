@@ -39,10 +39,14 @@ if st.button("send") and user_input:
 import streamlit as st 
 from groq_api import ask_groq
 from db import init_db, get_or_create_user, get_history, save_message
+init_db()
+if "history" not in st.session_state:
+    st.session_state.history = []
+
 
 
 # iniate database boot
-st.title(" 🔐 Chatbot User Session")
+st.title(" 🔐 Riabation Chatbot ")
 
 # first step: User Connection
 
@@ -50,16 +54,18 @@ if "user_id" not in st.session_state:
     username = st.text_input("Put Your Username  :")
     if st.button("Connection") and username:
         user_id = get_or_create_user(username)
+        st.write(f"user_id: {user_id}")
         st.session_state.user_id = user_id
         st.session_state.username = username
         st.session_state.history = get_history(user_id)
         st.success(f"Wellcome {username} !")
 
 
+
 # Second Step chat interface 
 if "user_id" in st.session_state:
     st.header(f"👤 Session : {st.session_state.username}")
-    user_input = st.text_input("Tap Your Question to Riabation :")
+    user_input = st.text_input("Tap Your Question to Riabation Intelij:")
 
     if st.button("Send") and user_input:
         #call groq with History
@@ -70,8 +76,9 @@ if "user_id" in st.session_state:
         save_message(st.session_state.user_id, "assistant", response )
 
         # session update
-        st.session_state.append({"role": "user", "content": user_input})
-        st.session_state.append({"role": "assistant", "content": response})
+        st.session_state.history.append({"role": "user", "content": user_input})
+        st.session_state.history.append({"role": "assistant", "content": response})
+        st.write(type(st.session_state.history)) # for displaying class list
 
         # display History
         if st.session_state.history:
