@@ -8,7 +8,7 @@ if "history" not in st.session_state:
     st.session_state.history = []
 
 
-st.title("chatbot with Groq")
+st.title("chatbot with Riabiation")
 
 user_input = st.text_input("please put your question to AI")
 
