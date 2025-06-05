@@ -96,11 +96,14 @@ if "user_id" in st.session_state:
 st.subheader("📁 File Analyser")
 upload_file = st.file_uploader("Upload A PDF & TXT & .chat File", type=["pdf", "txt", "chat"])
 
+
+# initiate the text variable
+text = ""
 if upload_file:
-    file_ext = os.path.splitext(upload_file)[1].lower()
+    file_ext = os.path.splitext(upload_file.name)[1].lower()
 
     # reading the content of file
-    text = ""
+    # text = ""
     if file_ext == ".pdf":
         pdf = PdfReader(upload_file)
         for page in  pdf.pages:
