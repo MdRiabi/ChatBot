@@ -35,6 +35,54 @@ if st.button("send") and user_input:
 
 
 '''
+
+
+# connexion page code 
+'''
+st.title("🔐 ChatBot ")
+
+menu = st.sidebar.selectbox("Menu", ["Se connecter", "Créer un compte"])
+
+if menu == "Créer un compte":
+    new_user = st.text_input("Nom d'utilisateur")
+    new_pass = st.text_input("Mot de passe", type="password")
+    if st.button("Créer le compte"):
+        if register_user(new_user, new_pass):
+            st.success("Compte créé ! Connecte-toi maintenant.")
+        else:
+            st.error("❌ Ce nom d'utilisateur existe déjà.")
+    
+
+elif menu == "Se connecter":
+    username = st.text_input("Nom d'utilisateur")
+    password = st.text_input("Mot de passe", type="password")
+    if st.button("Connexion"):
+        if verify_user(username, password):
+            st.session_state["username"] = username
+            st.success(f"Bienvenue {username} !")
+        else:
+            st.error("Identifiants invalides.")
+        
+
+# Bloquer l'accès s'il n'y a pas d'utilisateur
+if "username" not in st.session_state:
+    st.warning("Veuillez vous connecter.")
+
+else:
+    # Page principale
+    st.title("🔍 Page principale de recherche")
+    st.write("Bienvenue sur la page principale de recherche.")
+    
+
+
+# end connexion page code 
+
+'''
+
+
+
+
+
 import os
 import streamlit as st 
 from groq_api import ask_groq
@@ -49,6 +97,8 @@ init_db()
 if "history" not in st.session_state:
     st.session_state.history = []
 
+
+#   Utility functions for authentication
 
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
@@ -82,6 +132,10 @@ def register_user(username, password):
         return True
     except sqlite3.IntegrityError:
         return False
+
+# END Utility functions for authentication
+
+
 
 
 
