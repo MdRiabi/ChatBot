@@ -40,9 +40,49 @@ import streamlit as st
 from groq_api import ask_groq
 from db import init_db, get_or_create_user, get_history, save_message
 from PyPDF2 import PdfReader
+import hashlib
+import sqlite3
+
+
+
 init_db()
 if "history" not in st.session_state:
     st.session_state.history = []
+
+
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def verify_user(username, password):
+    conn = sqlite3.connect("history.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT password FROM users WHERE username =?",
+        (username,)
+
+    )
+    row = cursor.fetchone()
+    conn.close()
+
+    if row and hash_password(password) == row[0]:
+        return True
+    return False
+
+
+def register_user(username, password):
+    try:
+        conn = sqlite3.connect("history.db")
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO users (username, password) VALUES (?,?)", (username, hash_password(password))
+
+        )
+        conn.commit()
+        conn.close()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+
 
 
 
